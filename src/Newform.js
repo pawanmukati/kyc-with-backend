@@ -1,6 +1,6 @@
 import React from "react";
 import { ConversationalForm } from "conversational-form";
-import jsPDF from "jspdf";
+// import jsPDF from "jspdf";
 import moment from "moment";
 import {
   MDBBtn,
@@ -15,8 +15,8 @@ import {
 import "conversational-form/dist/conversational-form.min.css";
 // import i18n from "./i18n";
 import { withTranslation } from "react-i18next";
-import  axios  from "axios";
-import  {saveAs}  from "file-saver";
+import axios from "axios";
+import { saveAs } from "file-saver";
 
 class MyForm extends React.Component {
   changeLanguage = (lng) => {
@@ -47,66 +47,6 @@ class MyForm extends React.Component {
         "cf-label": "Spanish",
         onClick: this.changeLanguage("es"),
         value: "Spanish",
-      },
-     
-      {
-        tag: "input",
-        type: "radio",
-        name: "signatureStatus",
-        "cf-questions": "Will anybody else have signature right on the account?",
-        "cf-label": "Yes",
-        value: "yes",
-        html: "Yes",
-      },
-      {
-        tag: "input",
-        type: "radio",
-        name: "signatureStatus",
-        "cf-label": "No",
-        value: "no",
-        html: "No",
-      },
-      // if user click "yes" then show this field
-      {
-        tag: "select",
-        name: "signatoryRights",
-        "cf-questions": "How many more people will have signatory rights on the account?",
-        "cf-conditional-signatureStatus": "^yes$",
-        children: [
-          {
-            tag: "option",
-            value: "1",
-            "cf-label": "1",
-          },
-          {
-            tag: "option",
-            value: "2",
-            "cf-label": "2",
-          },
-          {
-            tag: "option",
-            value: "3",
-            "cf-label": "3",
-          },
-          {
-            tag: "option",
-            value: "4",
-            "cf-label": "4",
-          },
-          {
-            tag: "option",
-            value: "5",
-            "cf-label": "5",
-          },
-        ],
-      },
-      // add a default value for "signatoryRights" when "signatureStatus" is "No"
-      {
-        tag: "input",
-        type: "hidden",
-        name: "signatoryRights",
-        value: "1",
-        "cf-conditional-signatureStatus": "^no$",
       },
 
       // {
@@ -158,7 +98,7 @@ class MyForm extends React.Component {
         title: "Please enter a valid date in the format yyyy-mm-dd",
         "cf-error": "Please enter a valid date in the format yyyy-mm-dd",
         onKeyPress: (event) => {
-          if (!/[0-9\-]/.test(event.key)) {
+          if (!/[0-9-]/.test(event.key)) {
             event.preventDefault();
           }
         },
@@ -295,6 +235,12 @@ class MyForm extends React.Component {
       {
         tag: "input",
         type: "text",
+        name: "address",
+        "cf-questions": "Address (optional):"
+      },
+      {
+        tag: "input",
+        type: "text",
         name: "CityOfResidence",
         "cf-questions": "Country and city of residence:",
         value: "Dubai",
@@ -373,8 +319,8 @@ class MyForm extends React.Component {
       {
         tag: "input",
         type: "text",
-        name: "yourtitle:",
-        "cf-questions": "Your title:",
+        name: "jobtitle:",
+        "cf-questions": "Your job title:",
       },
       {
         tag: "input",
@@ -382,11 +328,86 @@ class MyForm extends React.Component {
         name: "natureofbusiness",
         "cf-questions": "Nature of Business:",
       },
+      //----
+      // {
+      //   tag: "cf-robot-message",
+      //   "cf-questions": "Joint signatory",
+      // },
+      // {
+      //   tag: "input",
+      //   type: "radio",
+      //   name: "signatureStatus",
+      //   "cf-questions":
+      //     "Will anybody else have signature right on the account?",
+      //   "cf-label": "Yes",
+      //   value: "yes",
+      //   html: "Yes",
+      // },
+      // {
+      //   tag: "input",
+      //   type: "radio",
+      //   name: "signatureStatus",
+      //   "cf-label": "No",
+      //   value: "no",
+      //   html: "No",
+      // },
+      // // if user click "yes" then show this field
+      // {
+      //   tag: "select",
+      //   name: "signatoryRights",
+      //   "cf-questions":
+      //     "How many more people will have signatory rights on the account?",
+      //   "cf-conditional-signatureStatus": "^yes$",
+      //   children: [
+      //     {
+      //       tag: "option",
+      //       value: "1",
+      //       "cf-label": "1",
+      //     },
+      //     {
+      //       tag: "option",
+      //       value: "2",
+      //       "cf-label": "2",
+      //     },
+      //     {
+      //       tag: "option",
+      //       value: "3",
+      //       "cf-label": "3",
+      //     },
+      //     {
+      //       tag: "option",
+      //       value: "4",
+      //       "cf-label": "4",
+      //     },
+      //     {
+      //       tag: "option",
+      //       value: "5",
+      //       "cf-label": "5",
+      //     },
+      //   ],
+      // },
+      // // add a default value for "signatoryRights" when "signatureStatus" is "No"
+      // {
+      //   tag: "input",
+      //   type: "hidden",
+      //   name: "signatoryRights",
+      //   value: "0",
+      //   "cf-conditional-signatureStatus": "^no$",
+      // },
+      // ---
+      {
+        tag: "cf-robot-message",
+        "cf-questions": "Financial Information",
+      },
       {
         tag: "input",
         type: "text",
         name: "annual_income",
         "cf-questions": "Avg Annual Income:",
+      },
+      {
+        tag: "cf-robot-message",
+        "cf-questions": "Investment Objectives and Risk Profile",
       },
       {
         tag: "select",
@@ -460,9 +481,9 @@ class MyForm extends React.Component {
 
     this.elem.appendChild(this.cf.el);
   }
-  
-  
-  submitCallback = async(e)=>{
+
+  submitCallback = async (e) => {
+    // e.preventDefault()
     var formDataSerialized = this.cf.getFormData(true);
     // Parse date string into desired format using Moment.js
     const dob = moment(formDataSerialized.dob, "YYYY-MM-DD").format(
@@ -478,25 +499,30 @@ class MyForm extends React.Component {
     // this.cf.addRobotChatResponse(
     //   "Your form has been submitted and the data has been saved as a PDF file."
     // );
+   
 
-
-   await axios.post(`http://localhost:8000/createPdf`,formDataSerialized) // create pdf next => get pdf
-   .then(()=>{
-      axios.get(`http://localhost:8000/fetchPdf`,{responseType:'blob'})
-      .then((res)=>{
-        const pdfBlob = new Blob([res.data],{type:'application/pdf'})
-        saveAs(pdfBlob,'invoiceDocument.pdf')
-
-
-      }).then(()=>{
-        axios.post(`http://localhost:8000/sendPdf`,{email:"pawan.mukati@newtechfusion.com"})
-        .then(res=>{
-          console.log(res)
-          alert(res.data)
-        })
-      })
-   })
-  }
+    // ------------
+    // await axios
+    //   .post(`http://localhost:8000/createPdf`, formDataSerialized) // create pdf next => get pdf
+    //   .then(() => {
+    //     axios
+    //       .get(`http://localhost:8000/fetchPdf`, { responseType: "blob" })
+    //       .then((res) => {
+    //         const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+    //         saveAs(pdfBlob, "invoiceDocument.pdf");
+    //       })
+    //       .then(() => {
+    //         axios
+    //           .post(`http://localhost:8000/sendPdf`, {
+    //             email: "pawan.mukati@newtechfusion.com",
+    //           })
+    //           .then((res) => {
+    //             console.log(res);
+    //             alert(res.data);
+    //           });
+    //       });
+    //   });
+  };
 
   toggleShow() {
     this.setState((prevState) => ({
@@ -504,50 +530,42 @@ class MyForm extends React.Component {
     }));
   }
 
-  pdfGenerator = () => {
+  pdfGenerator = async (e) => {
     const formDataSerialized = this.cf.getFormData(true);
-    const formData = new FormData();
+  
+    let email = "pawan.mukati@newtechfusion.com";
+    await axios
+      .post(`http://localhost:8000/createPdf`, formDataSerialized) //create pdf next=> get pdf
+      .then(() =>
+        axios
+          .get(`http://localhost:8000/fetchPdf`, { responseType: "blob" }) //to fetch the generated pdf
+          .then((res) => {
+            const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+            saveAs(pdfBlob, "InvoiceDocument.pdf"); //to save we use file saver
+          })
+          .then(() =>
+            axios
+              .post("http://localhost:8000/sendPdf", { email: email })
+              .then((response) => {
+                console.log(response);
+                alert(response.data);
+              })
+              .catch((error) => {
+                if (error.response) {
+                  console.log(error.response.data); // => the response payload
+                }
+              })
+          )
+          // .then((response) => {
+          //   console.log(response);
+          //   // alert("PDF sent successfully.");
+          // })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred while creating or sending the PDF.");
+          })
+      );
 
-    Object.entries(formDataSerialized).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
-    const doc = new jsPDF();
-
-    // Add custom font
-    doc.addFont("Helvetica", "Helvetica", "bold");
-
-    // Set font style
-    doc.setFont("Helvetica", "normal");
-    // Set font style and formatting for KYC data heading
-    doc.setFontSize(18);
-    doc.setTextColor(0, 0, 0); // black color
-    const kycDataHeading = "KYC Application Form Data";
-    const kycDataHeadingWidth =
-      (doc.getStringUnitWidth(kycDataHeading) * doc.internal.getFontSize()) /
-      doc.internal.scaleFactor;
-    const pageWidth = doc.internal.pageSize.width;
-    const margin = (pageWidth - kycDataHeadingWidth) / 2;
-    doc.text(margin, 20, kycDataHeading);
-
-    // Set font style and formatting for form fields
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0); // black color
-    doc.text(20, 40, "Personal information");
-    doc.text(20, 50, "First Name: " + formData.get("firstname"));
-    doc.text(20, 60, "Last Name: " + formData.get("lastname"));
-    doc.text(20, 70, "Date of Birth: " + formData.get("dob"));
-    doc.text(20, 80, "Nationality: " + formData.get("Nationality"));
-    doc.text(20, 90, "City Of Residence: " + formData.get("CityOfResidence"));
-    doc.text(20, 100, "Marital Status: " + formData.get("MaritalStatus"));
-    doc.text(20, 110, "Email: " + formData.get("email"));
-    doc.text(20, 120, "Phone Number: " + formData.get("phone"));
-    doc.text(80, 40, "Other information");
-    doc.text(80, 50, "Study: " + formData.get("study"));
-    doc.text(80, 60, "Actual Employer: " + formData.get("employer"));
-    doc.text(80, 70, "Avg Annual Income: " + formData.get("annual_income"));
-    doc.text(80, 80,"Investment Objective: " + formData.get("investmentObjective"));
-    doc.save("form-data.pdf");
   };
 
   render() {
